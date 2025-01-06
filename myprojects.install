@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Enables/disables this plugin source on install/uninstall.
+ */
+
+/**
+ * Implements hook_install().
+ */
+/*function myprojects_install() {
+  $configFactory = \Drupal::configFactory();
+  $enabled_sources = $configFactory->getEditable('project_browser.admin_settings')
+    ->get('enabled_sources');
+  $enabled_sources[] = 'myprojects';
+  $configFactory->getEditable('project_browser.admin_settings')
+    ->set('enabled_sources', $enabled_sources)
+    ->save(TRUE);
+}*/
+
+/**
+ * Implements hook_uninstall().
+ */
+function myprojects_uninstall() {
+  $admin_settings = \Drupal::configFactory()->getEditable('project_browser.admin_settings');
+  $enabled_sources = $admin_settings->get('enabled_sources');
+  if (($key = array_search('myprojects', $enabled_sources)) !== FALSE) {
+    unset($enabled_sources[$key]);
+    $admin_settings
+      ->set('enabled_sources', array_values($enabled_sources) ?: ['drupalorg_jsonapi'])
+      ->save(TRUE);
+  }
+}
